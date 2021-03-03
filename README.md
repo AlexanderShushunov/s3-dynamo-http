@@ -36,3 +36,6 @@ sam local invoke S3ToDynamoFunction --event-name ./events/event-s3.json
 ```bash
 aws cloudformation delete-stack --stack-name {stack-name}
 ```
+
+Resources:
+- https://evilmartians.com/chronicles/serverless-typescript-a-complete-setup-for-aws-sam-lambda
