@@ -1,6 +1,6 @@
 #!/bin/sh
 bucketName="avp-user-data-src"
-fileName="hw_200.csv"
+fileName="ex.json"
 objectPath="s3://${bucketName}/${fileName}"
 
 aws s3 rm "${objectPath}"
