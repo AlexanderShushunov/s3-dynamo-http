@@ -4,9 +4,12 @@ Description: >
   s3-to-dynamo
 
 Parameters:
-  AppBucketName:
+  SrcBucketName:
     Type: String
-    Description: "REQUIRED: Unique S3 bucket name to use for the app."
+    Description: "REQUIRED: Unique S3 bucket name."
+  ResultTableName:
+    Type: String
+    Description: "REQUIRED: DynamoDB table name"
 
 Resources:
   S3ToDynamoFunction:
@@ -18,21 +21,38 @@ Resources:
       Runtime: nodejs14.x
       MemorySize: 128
       Timeout: 60
+      Environment:
+        Variables:
+          RESULT_TABLE: !Ref ResultTable
       Policies:
-        S3ReadPolicy:
-          BucketName: !Ref AppBucketName
+        - S3ReadPolicy:
+            BucketName: !Ref SrcBucketName
+            # Give Create/Read/Update/Delete Permissions to the ResultTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ResultTable
       Events:
         S3NewObjectEvent:
           Type: S3
           Properties:
-            Bucket: !Ref AppBucket
+            Bucket: !Ref SrcBucket
             Events: s3:ObjectCreated:*
             Filter:
               S3Key:
                 Rules:
                   - Name: suffix
                     Value: ".csv"
-  AppBucket:
+  SrcBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref AppBucketName
+      BucketName: !Ref SrcBucketName
+
+  ResultTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: !Ref ResultTableName
+      PrimaryKey:
+        Name: uuid
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2

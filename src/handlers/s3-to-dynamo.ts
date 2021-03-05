@@ -10,8 +10,9 @@ type Record = {
 }
 
 export const s3ToDynamoHandler = async (event: S3CreateEvent) => {
+  console.log(process.env.RESULT_TABLE)
   const getObjectRequests = event.Records.map(record => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const params = {
         Bucket: record.s3.bucket.name,
         Key: record.s3.object.key

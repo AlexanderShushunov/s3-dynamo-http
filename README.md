@@ -1,13 +1,13 @@
-# AVP
+# APV
 It is [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) project.
 
 WORK IN PROGRESS!
 
 How it works:
- - somebody uploads a csv file to a S3 bucket (see AppBucketName in template.yaml) 
- I use `avp-user-data-src`. It is hardcoded in `events/event-s3.json` and `help-scripts/upload-to-s3.sh`
+ - somebody uploads a csv file to a S3 bucket (see SrcBucketName in template.yaml) 
+ I use `apv-user-data-src`. It is hardcoded in `events/event-s3.json` and `help-scripts/upload-to-s3.sh`
  - lambda S3ToDynamoFunction reads this file and puts the data do DynamoDB
- - lambda receives http request with user id and returns user's cluster from DB
+ - lambda receives http request with user id and returns user's segment from DB
  
 ## Build
 ```bash

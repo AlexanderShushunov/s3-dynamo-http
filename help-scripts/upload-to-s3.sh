@@ -1,5 +1,5 @@
 #!/bin/sh
-bucketName="avp-user-data-src"
+bucketName="apv-user-data-src"
 fileName="user-data.csv"
 objectPath="s3://${bucketName}/${fileName}"
 
