@@ -1,18 +1,18 @@
 import { mock, restore } from 'aws-sdk-mock'
 import { S3CreateEvent } from 'aws-lambda'
-import { AWSError } from 'aws-sdk/lib/error'
-import { GetObjectOutput, GetObjectRequest } from 'aws-sdk/clients/s3'
+import fs from 'fs'
+import path from 'path'
+
+const dataFilePath = path.join(__dirname, './user-data.csv');
 
 describe('Test s3JsonLoggerHandler', () => {
   it('should read and log S3 objects', async () => {
-    const objectBody = '{"Test": "PASS"}'
-    const getObjectResp = {
-      Body: objectBody
-    }
 
-    mock('S3', 'getObject', function (params: GetObjectRequest, callback: (err: unknown, data: GetObjectOutput) => void) {
-      callback(null, getObjectResp)
-    })
+    mock(
+      'S3',
+      'getObject',
+      fs.readFileSync(dataFilePath)
+    )
 
     const event = {
       Records: [
@@ -35,7 +35,7 @@ describe('Test s3JsonLoggerHandler', () => {
 
     await s3ToDynamoHandler(event as S3CreateEvent)
 
-    expect(console.info).toHaveBeenCalledWith(objectBody)
+    expect(console.info).toHaveBeenCalledWith('{"uuid":"f7b2759a-6d49-4041-8f76-e678dd46f898","segment":"normal"}')
     restore('S3')
   })
 })

@@ -31,7 +31,7 @@ Resources:
               S3Key:
                 Rules:
                   - Name: suffix
-                    Value: ".json"
+                    Value: ".csv"
   AppBucket:
     Type: AWS::S3::Bucket
     Properties:
