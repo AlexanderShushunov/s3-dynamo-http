@@ -1,6 +1,7 @@
 import { S3CreateEvent } from 'aws-lambda'
 import { S3 } from 'aws-sdk'
 import csvParser from 'csv-parser'
+import { writeToDynamo } from './writeToDynamo'
 
 const s3 = new S3()
 
@@ -10,9 +11,9 @@ type Record = {
 }
 
 export const s3ToDynamoHandler = async (event: S3CreateEvent) => {
-  console.log(process.env.RESULT_TABLE)
   const getObjectRequests = event.Records.map(record => {
     return new Promise((resolve) => {
+      const writesResult: Array<Promise<unknown>> = []
       const params = {
         Bucket: record.s3.bucket.name,
         Key: record.s3.object.key
@@ -20,11 +21,10 @@ export const s3ToDynamoHandler = async (event: S3CreateEvent) => {
       s3.getObject(params).createReadStream()
         .pipe(csvParser())
         .on('data', (data: Record) => {
-          console.info('========\n')
-          console.info(JSON.stringify(data))
+          writesResult.push(writeToDynamo(data))
         })
         .on('end', () => {
-          resolve(undefined)
+          Promise.all(writesResult).then(resolve)
         })
     })
   })

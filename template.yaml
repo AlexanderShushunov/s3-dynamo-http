@@ -17,7 +17,7 @@ Resources:
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: dist/handlers/s3-to-dynamo.s3ToDynamoHandler
+      Handler: dist/handlers/s3ToDynamoHandler.s3ToDynamoHandler
       Runtime: nodejs14.x
       MemorySize: 128
       Timeout: 60
